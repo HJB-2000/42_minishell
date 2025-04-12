@@ -1,10 +1,6 @@
 #ifndef MALLOC_H
 #define MALLOC_H
 
-#include <stdlib.h>
-#include <stdbool.h>
-
-
 typedef struct s_garbage
 {
 	void				*_malloc;
@@ -12,4 +8,5 @@ typedef struct s_garbage
 	struct s_garbage	*next;
 }	t_garbage;
 
+void	*_malloc(size_t size, bool trigger_free, bool exit_on_fail);
 #endif

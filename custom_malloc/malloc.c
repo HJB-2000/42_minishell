@@ -1,4 +1,4 @@
-#include "malloc.h"
+#include "../minishell.h"
 
 static t_garbage	*new_node(void *ptr, int i)
 {
@@ -15,7 +15,7 @@ static t_garbage	*new_node(void *ptr, int i)
 	return (new);
 }
 
-void	add_node(t_garbage **head, t_garbage *new_node)
+static void	add_node(t_garbage **head, t_garbage *new_node)
 {
 	t_garbage	*tmp;
 
@@ -30,7 +30,7 @@ void	add_node(t_garbage **head, t_garbage *new_node)
 	tmp->next = new_node;
 }
 
-void	_free(t_garbage **list)
+static void	_free(t_garbage **list)
 {
 	t_garbage	*tmp;
 
@@ -45,7 +45,7 @@ void	_free(t_garbage **list)
 	*list = NULL;
 }
 
-void	*treat_ptr(size_t size)
+static void	*treat_ptr(size_t size)
 {
 	void	*instant;
 
