@@ -1,93 +1,111 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   malloc.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jbahmida <jbahmida@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/12 15:05:57 by jbahmida          #+#    #+#             */
+/*   Updated: 2025/04/14 21:36:18 by jbahmida         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
-static t_garbage	*new_node(void *ptr, int i)
+static void *allocate_memory(size_t size)
 {
-	t_garbage	*new;
+    void *holder;
 
-	if (!ptr)
-		return (NULL);
-	new = malloc(sizeof(t_garbage));
-	if (!new)
-		return (NULL);
-	new->_malloc = ptr;
-	new->index = i;
-	new->next = NULL;
-	return (new);
+    holder = malloc(size);
+    if (!holder)
+        return NULL;
+    return holder;
 }
 
-static void	add_node(t_garbage **head, t_garbage *new_node)
+static t_garbage *new(void *pointer, int index)
 {
-	t_garbage	*tmp;
-
-	if (!*head)
-	{
-		(*head) = new_node;
-		return ;
-	}
-	tmp = *head;
-	while (tmp->next)
-		tmp = tmp->next;
-	tmp->next = new_node;
+    t_garbage *new_node;
+    if(!pointer)
+        return NULL;
+    new_node = malloc(sizeof(t_garbage));
+    if(!new_node)
+        return NULL;
+    new_node->allocted = pointer;
+    new_node->index = index;
+    new_node->next = NULL;
+    return new_node;
 }
-
-static void	_free(t_garbage **list)
+static void insertnode(t_garbage **head, t_garbage *node)
 {
-	t_garbage	*tmp;
+    t_garbage *tmp;
 
-	while (*list)
-	{
-		tmp = *list;
-		*list = (*list)->next;
-		free(tmp->_malloc);
-		free(tmp);
-		tmp = NULL;
-	}
-	*list = NULL;
-}
-
-static void	*treat_ptr(size_t size)
-{
-	void	*instant;
-
-	instant = NULL;
-	if (size > 0)
+    if(!head || !node)
+        return ;
+    if(!*head) 
     {
-		instant = malloc(size);
-		if (!instant)
-			return (NULL);
-	}
-	return (instant);
-}
-
-void	*_malloc(size_t size, bool trigger_free, bool exit_on_fail)
-{
-	static t_garbage	*head = NULL;
-	t_garbage			*new;
-	static int			i = 0;
-	void				*instant;
-
-	if (trigger_free)
-		return (_free(&head), NULL);
-	if (!exit_on_fail)
-    {
-        instant = treat_ptr(size);
-	    if (!instant)
-		    exit_on_fail = true;
+        *head = node;
+        return;
     }
-	if (exit_on_fail)
-	{
-		_free(&head);
-		perror("problem at allocation");
-		exit(EXIT_FAILURE);
-	}
-	new = new_node(instant, i);
-	i++;
-	if (!new)
-	{
-		_free(&head);
-		perror("we faced a problem");
-		exit(EXIT_FAILURE);
-	}
-	add_node(&head, new);
-	return (instant);
+    tmp = *head;
+    while(tmp->next)
+        tmp = tmp->next;
+    tmp->next = node;    
+}
+static void _free(t_garbage **head)
+{
+    t_garbage *tmp;
+    t_garbage *current;
+
+    if(!head || !*head)
+        return ;
+    tmp = *head;
+    while(tmp)
+    {
+        current = tmp;
+        tmp = tmp->next;
+        free(current->allocted);
+        free(current);
+        current = NULL;
+    }
+    *head = NULL;
+}
+void *_malloc(size_t size, void *non_allocted ,bool trigger_free, bool error_free)
+{
+    //create a garabage node to hold the alloceted memory address and it index of allocation
+    //add this created node to the static linked list
+    // we need a free function for this list in case we needed to free
+
+    void *instence = NULL;
+    t_garbage *new_node;
+    static t_garbage *garbage;
+    static int i = 0;
+
+    if(trigger_free)
+    {
+        _free(&garbage);
+        return NULL;
+    }
+    if ((size > 0 || non_allocted) && !error_free)
+    {
+        if(size > 0 || !non_allocted)
+            instence = allocate_memory(size);
+        else
+            instence = non_allocted;
+        if (!instence)
+            error_free = true;
+        new_node = new(instence, i);
+        if (!new_node)
+            error_free = true;
+        insertnode(&garbage, new_node);
+        i++;
+    }
+    if(error_free)
+    {
+        if(instence)
+            free(instence);
+        _free(&garbage);
+        perror("allocation problem");
+        exit(EXIT_FAILURE);       
+    }
+    return instence;   
 }

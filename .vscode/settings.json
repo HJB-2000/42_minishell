@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "minishell.h": "c",
+        "history.h": "c",
+        "stdio.h": "c",
+        "_stdio.h": "c",
+        "availability.h": "c",
+        "read_input.h": "c",
+        "malloc.h": "c",
+        "helper_functions.h": "c",
+        "readline.h": "c"
+    }
+}
