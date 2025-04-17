@@ -21,9 +21,4 @@ typedef struct s_garbage
 }	t_garbage;
 
 void *_malloc(size_t size, void *non_allocted ,bool trigger_free, bool error_free);
-static void _free(t_garbage **head);
-static void insertnode(t_garbage **head, t_garbage *node);
-static t_garbage *new(void *pointer, int index);
-static void *allocate_memory(size_t size);
-
 #endif

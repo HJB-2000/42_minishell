@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-t_HISTORY *new_hist_entry(const char *line, int index_line)
+static t_HISTORY *new_hist_entry(const char *line, int index_line)
 {
     t_HISTORY *new_entry;
 
@@ -16,7 +16,7 @@ t_HISTORY *new_hist_entry(const char *line, int index_line)
     return (new_entry);
 }
 
-void InsertEntry(t_HISTORY **hist, t_HISTORY *entry)
+static void InsertEntry(t_HISTORY **hist, t_HISTORY *entry)
 {
     t_HISTORY *tmp;
 
@@ -34,7 +34,7 @@ void InsertEntry(t_HISTORY **hist, t_HISTORY *entry)
     return ;
 }
 
-void print_hist(t_HISTORY **hist)
+static void print_hist(t_HISTORY **hist)
 {
     t_HISTORY *tmp;
 
@@ -49,23 +49,27 @@ void print_hist(t_HISTORY **hist)
     return;
 }
 
-void clear_hist(t_HISTORY **hist)
+static void clear_hist(t_HISTORY **hist)
 {
     t_HISTORY *tmp;
-    t_HISTORY *current;
+    t_HISTORY *next;
 
-    if(!hist || !*hist)
-        return ;
+    if (!hist || !*hist)
+        return;
+
     tmp = *hist;
-    while(tmp)
+    while (tmp)
     {
-        current = tmp;
-        free((void *)current->line);
-        free(current);
-        current = NULL;
-        tmp = tmp->next;
+        next = tmp->next; // Save the next node before freeing
+        if (tmp->line)
+        {
+            free((char *)tmp->line);
+            tmp->line = NULL;
+        }
+        free(tmp); // Free the current node
+        tmp = next; // Move to the next node
     }
-    *hist = NULL;
+    *hist = NULL; // Nullify the head pointer
 }
 
 bool history(const char *line, bool display, bool clear)
@@ -81,10 +85,10 @@ bool history(const char *line, bool display, bool clear)
     }
     if(clear)
     {
-        rl_clear_history();
         clear_hist(&hist);
+        rl_clear_history();
         index = 1;
-        return true;
+        // return true;
     }
     tmp = new_hist_entry(line, index);
     if(!tmp)
@@ -94,3 +98,5 @@ bool history(const char *line, bool display, bool clear)
     index++;
     return (true);
 }
+// --leak-check=full --leak-resolution=high --show-leak-kinds=all --errors-for-leak-kinds=all --show-reachable=yes --show-possibly-lost=yes
+// valgrind --leak-check=full --leak-resolution=high --show-leak-kinds=all  --show-reachable=yes --show-possibly-lost=yes

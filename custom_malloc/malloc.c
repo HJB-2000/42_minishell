@@ -24,7 +24,7 @@ static void *allocate_memory(size_t size)
 
 static t_garbage *new(void *pointer, int index)
 {
-    t_garbage *new_node;
+    t_garbage *new_node = NULL;
     if(!pointer)
         return NULL;
     new_node = malloc(sizeof(t_garbage));
@@ -64,6 +64,7 @@ static void _free(t_garbage **head)
         current = tmp;
         tmp = tmp->next;
         free(current->allocted);
+        current->allocted = NULL;
         free(current);
         current = NULL;
     }
@@ -102,8 +103,12 @@ void *_malloc(size_t size, void *non_allocted ,bool trigger_free, bool error_fre
     if(error_free)
     {
         if(instence)
+        {
             free(instence);
+            instence = NULL;
+        }
         _free(&garbage);
+        garbage = NULL;
         perror("allocation problem");
         exit(EXIT_FAILURE);       
     }

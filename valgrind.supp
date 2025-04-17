@@ -1,0 +1,11 @@
+{
+    ignore_readline_leak
+    Memcheck:Leak
+    fun:readline
+}
+{
+    ignore_readline_still_reachable
+    Memcheck:Leak
+    fun:readline
+    fun:xmalloc
+}

@@ -1,7 +1,7 @@
 NAME = minishell
 HEADER = minishell.h
-GFLAGS = -Werror -Wall -Wextra
-CC = cc
+GFLAGS = -Werror -Wall -Wextra -g3 
+CC = gcc
 
 MAIN_FILE = main.c
 
@@ -21,10 +21,10 @@ SRC_FILE =	$(MAIN_FILE) $(READ_INPUT_FILES)\
 OBJS = $(SRC_FILE:.c=.o)
 
 %.o: %.c $(HEADER)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(GFLAGS) -c $< -o $@
 
 $(NAME) : $(OBJS)
-	$(CC) $(GFLAGS) $(OBJS) -o $(NAME) -I/mnt/homes/jbahmida/.brew/opt/readline/include -L/mnt/homes/jbahmida/.brew/opt/readline/lib -lreadline
+	$(CC) $(GFLAGS) $(OBJS) -lreadline -o $(NAME) 
 all: $(NAME)
 clean:
 	rm -f $(OBJS)

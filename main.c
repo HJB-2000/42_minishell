@@ -11,28 +11,23 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <readline/readline.h>
-#include <readline/history.h>
+
 void l(void){system("leaks minishell");}
 
 int main(int argc, char **argv, char **envp)
 {
-    HISTORY_STATE *len;
+    (void)argc;
+    (void)argv;
+    (void)envp;
     char *line;
-    // int i = 10;
-    while(true)
+    int i = 20;
+    while(i--)
     {
         line = read_input();
-        if(line && *line){
-            history(line, false, false);
-            _malloc(0, len, false, false);
-            if(!strcmp(line, "history"))
-                history(NULL, true, false);
-            else if(!strcmp(line, "clear"))
-                history(NULL, false, true);
-            else
-                printf("%s\n",line);
-        }
+        printf("%s\n",line);
+        free(line);
+        line = NULL;
     }
-    atexit(l);
+    _malloc(0, NULL, true, false);
+    history(NULL, false, true);
 }

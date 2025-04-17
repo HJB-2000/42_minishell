@@ -12,8 +12,12 @@ static char *extract_absolute_path(char *str)
     while(str[len--] != '/')
         count++;
     start = ft_strlen(str) - count;
-    if(!(absolute_path = _malloc(sizeof(char) * count +1, NULL, false, false)))
-    	return (_malloc(0, NULL, false, true));
+    absolute_path = _malloc(sizeof(char) * count +1, NULL, false, false);
+    if(!absolute_path)
+    {
+        _malloc(0, NULL, false, false);
+    	return (NULL);
+    }
 	count = 0;
     while(str[start])
 		absolute_path[count++] = str[start++];
@@ -57,6 +61,16 @@ char *read_input(void)
     line = readline(prompt);
     if(!line)
         return(_malloc(0, NULL, true, false));
-    _malloc(0, line, false, false);
+    if(line && *line){
+        if(!history(line, false, false)){
+            printf("Error: history failed\n");
+            exit(1);
+        }
+        _malloc(0, line, false, false);
+        if(!strcmp(line, "history"))
+            history(NULL, true, false);
+        else if(!strcmp(line, "clear"))
+            history(line, false, true);
+    }
     return (line);
 }
