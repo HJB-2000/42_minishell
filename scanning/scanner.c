@@ -90,6 +90,42 @@ Token scanToken_MINI(Scanner* scanner){
     return errorToken(scanner, "Unexpected character . ");
 }
 
+
+typedef struct s_tokens{
+    Token *token;
+    int index;
+    struct s_tokens *next;
+} TokenList;
+
+
+TokenList* newTokenNode(Token* token, int index){
+    TokenList* node;
+    if (!token) return NULL;
+    node = _malloc(sizeof(Token), NULL, false, false);
+    if(!node) _malloc(0, NULL, false, true);
+    node->token = token;
+    node->index = index;
+    return node;
+} 
+void AddTokenNode(TokenList** head, TokenList* newNode){
+    if(!head || !newNode) return NULL;
+    if(!*head) {*head = newNode; return ;}
+    else
+        TokenList* tmp = *head;
+
+}
+
+
+
+Token scanToken_MINI(Scanner* scanner){
+    skipWhitespace(scanner);
+    scanner->current = scanner->start;
+    if(isAtEnd(scanner)) return makeToken(scanner, TOKEN_EOF_M);
+    if(isAlpha(scanner)) return identifier(scanner);
+    if(isDigit) return number(scanner);
+}
+
+
 void compile(const char *source) {
     Scanner scanner;
     initScanner(&scanner ,source);
