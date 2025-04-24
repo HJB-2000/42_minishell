@@ -13,7 +13,6 @@
 #ifndef MINISHELL_H
 #define MINISHELL_H
 
-void l(void);
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,7 +22,7 @@ void l(void);
 #include "custom_malloc/malloc.h"
 #include "helper_functions/helper_functions.h"
 #include "read_input_and_history/read_input.h"
-
+#include "scanning/scanner.h"
 
 
 #endif

@@ -1,1 +1,5 @@
 1- fix the errors occures with ctr-d
+    and all the siganals cause it cause 
+        -sigfault
+        -double free
+        -leaks

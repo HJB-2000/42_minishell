@@ -1,0 +1,199 @@
+( / | . echo -n ) < # this is a comment ||
+EOF EOF $VAR # this is a comment ) export VAR=value )
+pwd string EOF string $? $?
+* * << && identifier )
+$? $? # this is a comment echo -n ) &&
+* 'string' identifier
+"string" | > EOF EOF (
+# this is a comment string .. 'string' * ||
+.. cd .. |
+| cd .. EOF
+) | >
+<< * ..
+# this is a comment EOF string identifier EOF identifier
+"string" unset VAR EOF ||
+|| $? $VAR ||
+pwd ~ $? EOF $? ) "string"
+) $VAR | EOF EOF ?
+| history string
+# this is a comment history | .
+| string identifier <<
+* ? string EOF
+&& ) (
+|| string ~ $? * string
+? && << $?
+"string" string $? ? ||
+~ env || clear ?
+identifier * | |
+| * >> # this is a comment >> EOF identifier
+'string' > ? string *
+EOF $VAR # this is a comment
+EOF || identifier $VAR
+identifier echo -n && identifier <
+'string' | clear
+* EOF identifier
+cd / # this is a comment &&
+< $? ~ EOF echo -n cd .. $?
+identifier * # this is a comment
+< # this is a comment $? ) EOF | "string"
+EOF "string" identifier * pwd $?
+identifier # this is a comment * / >>
+&& ? $? EOF ) < /
+identifier | # this is a comment | .. $VAR
+.. * )
+) # this is a comment ||
+'string' ? < EOF EOF | |
+$? 'string' $VAR &&
+|| echo -n $? $? .
+'string' . $? *
+# this is a comment | / $VAR $VAR
+( > history echo -n
+clear # this is a comment cd .. echo -n $VAR
+| > $?
+cd / ( echo -n
+* .. | identifier identifier
+'string' ) * ~ echo -n
+) ) EOF | history "string" (
+|| && $?
+( > ~ && clear
+&& ? && "string" # this is a comment # this is a comment ?
+.. string < identifier ) $? EOF
+( >> $VAR EOF ( $?
+EOF . .. * # this is a comment $VAR |
+$? / || exit >>
+* string $? | $VAR
+# this is a comment | "string"
+EOF ( # this is a comment "string"
+|| .. | identifier &&
+. || $VAR | EOF
+>> string $?
+"string" && || * >> || ?
+< $VAR $VAR
+* echo -n >> ~
+unset VAR && ( && |
+&& < .. $VAR <
+exit EOF < $VAR $? "string"
+EOF >> EOF .. <<
+EOF ( EOF identifier $? string
+$? < ) export VAR=value ~ .. # this is a comment
+# this is a comment * # this is a comment # this is a comment cd ..
+| ( # this is a comment
+# this is a comment .. $VAR $VAR |
+|| # this is a comment ..
+# this is a comment string 'string' &&
+/ env | || EOF ( # this is a comment
+? EOF # this is a comment ? || * ?
+<< ( | ||
+* $? >>
+. > $? "string" && identifier
+string ? | << ..
+.. string cd / | # this is a comment # this is a comment
+EOF / $VAR ||
+# this is a comment # this is a comment <<
+$VAR unset VAR "string"
+cd / ? 'string' ..
+&& history string ) 'string'
+# this is a comment $VAR <<
+~ < > ? EOF | 'string'
+&& * string
+string < EOF | * ||
+EOF ( EOF "string"
+. | 'string' env
+( ? ( . echo -n
+pwd EOF ) && EOF EOF exit
+pwd identifier $? &&
+$VAR $VAR "string" (
+) * string >> .. # this is a comment "string"
+# this is a comment * ( string * string
+| $VAR "string" | *
+# this is a comment / * env
+.. | && # this is a comment env . *
+env # this is a comment * identifier
+'string' && .. * &&
+<< EOF EOF $?
+| $? $VAR ) ? | *
+# this is a comment $VAR # this is a comment ? ..
+# this is a comment # this is a comment ?
+| || ?
+| ) env *
+&& | identifier )
+| ~ / $?
+$? | ? 'string'
+|| 'string' ( >> EOF # this is a comment
+* "string" && # this is a comment "string" 'string'
+# this is a comment ? ( ?
+< && export VAR=value && history # this is a comment *
+# this is a comment * 'string' | .. cd /
+) ) ~ | ) * )
+| ) /
+&& $VAR $? $VAR <
+( ) EOF .
+history && ( EOF 'string' $?
+| # this is a comment "string" ~
+) < EOF
+* * < ) string $VAR
+| && &&
+< * $VAR
+'string' || | EOF
+# this is a comment && ( ?
+|| / > .
+EOF ? EOF
+EOF $? cd / ? string (
+"string" / | EOF (
+# this is a comment || $VAR # this is a comment
+string "string" ~ | < # this is a comment *
+pwd EOF <<
+&& | |
+EOF # this is a comment # this is a comment string
+# this is a comment | ? EOF && identifier # this is a comment
+# this is a comment EOF ||
+) ) ) # this is a comment 'string' $VAR
+|| .. $VAR
+|| EOF EOF
+# this is a comment ( $?
+string < ~ # this is a comment
+string EOF . # this is a comment
+) ( EOF
+. env identifier cd / cd /
+&& .. # this is a comment string
+EOF ? string EOF *
+) / clear pwd (
+$VAR 'string' # this is a comment &&
+EOF identifier ? ~
+'string' identifier "string" ~
+EOF / && string | |
+cd .. "string" string identifier EOF export VAR=value
+$? ) $? >>
+env || || echo -n "string" identifier
+| << # this is a comment 'string'
+| history # this is a comment 'string'
+|| * EOF ( ( $?
+EOF $VAR ? ..
+| | history )
+$? .. echo -n
+&& ) # this is a comment "string" ||
+* EOF / ?
+<< pwd && EOF identifier string
+$? || # this is a comment ? $VAR EOF
+< $VAR ? unset VAR
+$? env ) ~ >> identifier $?
+? 'string' EOF |
+. ) "string" <<
+.. 'string' "string" cd .. exit .
+$VAR ( $? * cd ..
+EOF EOF ||
+~ .. &&
+# this is a comment # this is a comment identifier identifier exit $?
+"string" # this is a comment history
+$? # this is a comment && # this is a comment * # this is a comment &&
+EOF $VAR $? ?
+> || || # this is a comment ? pwd string
+identifier EOF identifier *
+# this is a comment # this is a comment # this is a comment # this is a comment # this is a comment 'string' string
+/ string && . <
+string ) identifier
+unset VAR .. "string" >
+# this is a comment 'string' identifier ( )
+<< ? * # this is a comment
+| * < ||
+EOF EOF 'string' >> export VAR=value # this is a comment

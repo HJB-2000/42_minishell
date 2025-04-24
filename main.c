@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-void l(void){system("leaks minishell");}
 
 int main(int argc, char **argv, char **envp)
 {
@@ -24,10 +23,9 @@ int main(int argc, char **argv, char **envp)
     while(i--)
     {
         line = read_input();
-        printf("%s\n",line);
-        free(line);
-        line = NULL;
+        compile((const char *)line);
     }
-    _malloc(0, NULL, true, false);
+    // _malloc(0, NULL, true, false);
+    ALLOCATE(0, NULL, true, false);
     history(NULL, false, true);
 }

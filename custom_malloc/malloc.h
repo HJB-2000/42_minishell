@@ -20,5 +20,8 @@ typedef struct s_garbage
 	struct s_garbage	*next;
 }	t_garbage;
 
+#define ALLOCATE(allocateSize, pointer, freeFlag, errorFlag) \
+	_malloc(allocateSize, pointer, freeFlag, errorFlag)
+
 void *_malloc(size_t size, void *non_allocted ,bool trigger_free, bool error_free);
 #endif

@@ -1,12 +1,20 @@
 NAME = minishell
 HEADER = minishell.h
+BRANCH_HEADERS = custom_malloc/malloc.h\
+					helper_functions/helper_functions.h\
+					read_input_and_history/read_input.h\
+					scanning/scanner.h
+
 GFLAGS = -Werror -Wall -Wextra -g3 
 CC = gcc
 
 MAIN_FILE = main.c
 
 READ_INPUT_FILES = read_input_and_history/read_command.c\
-					read_input_and_history/history.c
+					read_input_and_history/history.c\
+					scanning/scanner.c\
+					scanning/token.c
+
 
 
 GARBAGE_COLLECTORE = custom_malloc/malloc.c
@@ -20,7 +28,7 @@ SRC_FILE =	$(MAIN_FILE) $(READ_INPUT_FILES)\
 			$(GARBAGE_COLLECTORE) $(HELPER_FUNCTIONS)
 OBJS = $(SRC_FILE:.c=.o)
 
-%.o: %.c $(HEADER)
+%.o: %.c $(HEADER) $(BRANCH_HEADERS)
 	$(CC) $(GFLAGS) -c $< -o $@
 
 $(NAME) : $(OBJS)

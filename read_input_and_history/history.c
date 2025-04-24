@@ -100,3 +100,4 @@ bool history(const char *line, bool display, bool clear)
 }
 // --leak-check=full --leak-resolution=high --show-leak-kinds=all --errors-for-leak-kinds=all --show-reachable=yes --show-possibly-lost=yes
 // valgrind --leak-check=full --leak-resolution=high --show-leak-kinds=all  --show-reachable=yes --show-possibly-lost=yes
+// valgrind --leak-check=full --show-leak-kinds=all --suppressions=valgrind.supp ./your_program

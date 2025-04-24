@@ -1,0 +1,63 @@
+• Search and launch the right executable (based on the PATH variable or using a
+relative or an absolute path).
+
+
+• (||)                      ===> 1          logical OR operator                                 : TOKEN_OR
+
+• (&&)                      ===> 2          logical AND operator                                : TOKEN_AND
+
+• (|)                       ===> 3          Pipe                                                : TOKEN_PIPE
+
+• (<)                       ===> 4          Input Redirection                                   : TOKEN_REDIR_IN
+
+• (>)                       ===> 5          Output redirection (overwrite)                      : TOKEN_REDIR_OUT
+
+• (<<)                      ===> 6          Here-document (heredoc)                             : TOKEN_HEREDOC
+
+• (>>)                      ===>  7         Output redirection (append)                         : TOKEN_REDIR_APPEND
+
+• (*)                       ===> 8          Character Sequence Bash Wildcard                    : TOKEN_ASTERISK
+
+• (?)                       ===> 9          Single Character Bash Wildcard                      : TOKEN_QUESTION
+
+• (/)                       ===> 10         Path Directory Separator                            : TOKEN_SLASH
+
+• (~)                       ===> 11         Home Directory                                      : TOKEN_TILDE
+
+• (.)                       ===> 12         Current Directory                                   : TOKEN_DOT
+
+• (..)                      ===> 13         Parent Directory                                    : TOKEN_DOTDOT
+
+• ('(')                     ===> 14	        Open parenthesis for precedence (bonus)             : TOKEN_LPAREN
+
+• (')')	                    ===> 15         Close parenthesis for precedence (bonus)            : TOKEN_RPAREN
+
+• ('...')                   ===> 16         single quote                                        : TOKEN_SQUOTE
+
+• ("...")                   ===> 17         double quote                                        : TOKEN_DQUOTE
+
+• ($VAR)                    ===> 18         Variable Expressions                                : TOKEN_VAR /**/
+
+• ($?)                      ===> 19         Variable Expressions                                : TOKEN_EXIT_STATUS /**/
+
+• (#)                       ===> 20         Comment or Trim Strings                             : TOKEN_HASH
+
+• (EOF)                     ===> 21         End of input (to trigger exit, or heredoc end)      : TOKEN_EOF /**/
+
+• string
+
+• identifier
+
+• Builtin command           ===> 24                                                             : TOKEN_BUILTIN
+    - cd with relative / absolute path ==> c
+    - clear     => c
+    - pwd       => p
+    - unset     => u
+    - history   => h
+
+    - exit      => e
+    - export    => e
+    - env       => e
+    - echo with -n => e
+    
+
