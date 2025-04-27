@@ -84,7 +84,7 @@ TokenType checkKeyword(Scanner* scanner, int start, int length,
     const char* rest, TokenType type) {
 
       if (scanner->current - scanner->start == start + length &&
-          memcmp(scanner->start + start, rest, length) == 0) {
+          ft_memcmp(scanner->start + start, rest, length) == 0) {
             return type;
       }
 
@@ -185,4 +185,13 @@ Token SingleQ_string(Scanner* scanner) {
     // The closing quote.
     advance(scanner);
     return makeToken(scanner, TOKEN_SQUOTE);
+}
+Token GroupingToken(Scanner* scanner) {
+  while (peek(scanner) != ')' && !isAtEnd(scanner)) {
+    if (peek(scanner) == '\n') scanner->line++;
+    advance(scanner);
+  }
+  if (isAtEnd(scanner)) return errorToken(scanner ,"Unterminated parthen.");
+  advance(scanner);
+  return makeToken(scanner, TOKEN_GROUP);
 }

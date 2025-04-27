@@ -5,7 +5,7 @@ BRANCH_HEADERS = custom_malloc/malloc.h\
 					read_input_and_history/read_input.h\
 					scanning/scanner.h
 
-GFLAGS = -Werror -Wall -Wextra -g3 
+GFLAGS = -Werror -Wall -Wextra -g3 -fsanitize=address
 CC = gcc
 
 MAIN_FILE = main.c
@@ -13,7 +13,8 @@ MAIN_FILE = main.c
 READ_INPUT_FILES = read_input_and_history/read_command.c\
 					read_input_and_history/history.c\
 					scanning/scanner.c\
-					scanning/token.c
+					scanning/token.c\
+					scanning/recognize.c
 
 
 
