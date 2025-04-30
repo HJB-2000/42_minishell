@@ -25,35 +25,38 @@
 // } TokenType;
 
 typedef enum {
-//level 1
-  TOKEN_OR_M, TOKEN_AND_M,
-  
-  //level 2
-  TOKEN_PIPE_M,
-//level 3
-  TOKEN_REDIR_IN , TOKEN_REDIR_OUT,
-  TOKEN_HEREDOC , TOKEN_REDIR_APPEND,
-// level 4
-  TOKEN_ASTERISK, TOKEN_QUESTION,
-  TOKEN_SLASH_M, TOKEN_TILDE,
-  TOKEN_DOT_M, TOKEN_DOTDOT,
-  TOKEN_LPAREN, TOKEN_RPAREN,
-  TOKEN_SQUOTE, TOKEN_DQUOTE,
-  TOKEN_DOLLOR, TOKEN_DASH,
-  TOKEN_OPTION,
-  TOKEN_VAR_M, TOKEN_EXIT_STATUS,
-  TOKEN_HASH, TOKEN_EOF_M,
-//level 5
-  // TOKEN_BUILTIN,
-  TOKEN_PWD, TOKEN_UNSET, TOKEN_HISTORY,
-  TOKEN_EXIT, TOKEN_ENV, TOKEN_EXPORT,
-  TOKEN_ECHO, TOKEN_CD, TOKEN_CLEAR,
-//level 6
-  TOKEN_GROUP,
-  TOKEN_PATH,
-  TOKEN_IDENTIFIER,
-  TOKEN_NUMBER , TOKEN_STRING,
-  TOKEN_ERROR
+// //level 1
+
+//   //level 2
+// //level 3
+//   TOKEN_REDIR_IN , TOKEN_REDIR_OUT,
+//   TOKEN_HEREDOC , TOKEN_REDIR_APPEND,
+// // level 4
+//   TOKEN_ASTERISK, TOKEN_QUESTION,
+//   TOKEN_SLASH_M, TOKEN_TILDE,
+//   TOKEN_DOT_M, TOKEN_DOTDOT,
+//   TOKEN_LPAREN, TOKEN_RPAREN,
+//   TOKEN_DOLLOR, TOKEN_DASH,
+//   TOKEN_OPTION,
+//   TOKEN_VAR_M, TOKEN_EXIT_STATUS,
+//   TOKEN_HASH,
+// //level 5
+//   // TOKEN_BUILTIN,
+//   TOKEN_PWD, TOKEN_UNSET, TOKEN_HISTORY,
+//   TOKEN_EXIT, TOKEN_ENV, TOKEN_EXPORT,
+//   TOKEN_ECHO, TOKEN_CD, TOKEN_CLEAR,
+// //level 6
+//   TOKEN_GROUP,
+//   TOKEN_PATH,
+//   TOKEN_NUMBER , TOKEN_STRING,
+
+	TOKEN_AND, TOKEN_OR, 
+	TOKEN_PIPE_M,
+	TOKEN_SQUOTE, TOKEN_DQUOTE,
+	TOKEN_NUMBER,
+	TOKEN_EOF,
+	TOKEN_ERROR,
+	TOKEN_IDENTIFIER
 } TokenType;
 
 typedef enum{
@@ -62,11 +65,17 @@ typedef enum{
 	level_3,
 	level_4,
 	level_5,
-	level_6
-}precedence;
+	level_6,
+	level_7,
+	level_8,
+	level_9
+}Precedence;
 
-
-
+typedef enum {
+	nil_nil,
+	nil_right,
+	left_right
+} Associativity;
 
 typedef enum {
 	WORD_IDENTIFIER,
@@ -78,6 +87,33 @@ typedef enum {
 	AND_IF,
 	AND_OR,
 }Token_;
+
+typedef struct identifier{
+	char* lexem_ID;
+	char* lexem_DQ;
+	char* lexem_SQ;
+	double lexem_num;
+} ID;
+
+typedef struct operator{
+ 	char lexem_OP;
+	char *lexem_OP1;	
+} OP;
+
+typedef union lexems
+{
+	ID* lex_id;
+	OP* lex_op;
+} LexemsValue;
+
+typedef struct abstract_tree{
+	char* lexem;
+	Precedence* wight;
+	LexemsValue* value;
+	struct abstract_tree* left_node;
+	struct abstract_tree* right_node;
+} AST;
+
 
 
 
@@ -97,7 +133,8 @@ typedef struct s_Token{
 
 typedef struct s_tokens{
   Token *token;
-  precedence PowerLevel;
+  Precedence PowerLevel;
+  Associativity PworType;
   int index;
   struct s_tokens *next;
 } TokenList;
