@@ -70,46 +70,78 @@ static void _free(t_garbage **head)
     }
     *head = NULL;
 }
-void *_malloc(size_t size, void *non_allocted ,bool trigger_free, bool error_free)
+
+static t_field* choose_garbage()
+{   
+    static t_field ptrs = {NULL, NULL, NULL, NULL};
+    return &ptrs;
+}
+static void _free_all(t_field **ptrs)
 {
-    //create a garabage node to hold the alloceted memory address and it index of allocation
-    //add this created node to the static linked list
-    // we need a free function for this list in case we needed to free
+    t_field *grc;
+    grc = *ptrs;
+    _free(&grc->history); grc->history=NULL;
+    _free(&grc->input_cmd);grc->input_cmd = NULL;
+    _free(&grc->scanner); grc->scanner =NULL;
+    _free(&grc->helper_funcs); grc->helper_funcs =NULL;
+
+}
+void *_malloc(size_t size, void *non_allocted ,int behavior, char field)
+{
+    t_field *ptrs;
+    static t_garbage **garbage;
+
+    t_garbage *new_node;
 
     void *instence = NULL;
-    t_garbage *new_node;
-    static t_garbage *garbage;
     static int i = 0;
+    int err = 0;
 
-    if(trigger_free)
+    ptrs = choose_garbage();
+    if(field == 'a')
     {
-        _free(&garbage);
+        _free_all(&ptrs);
+    }
+    else if(field == 'i')
+        garbage = &ptrs->input_cmd;
+    else if(field == 'h')
+        garbage = &ptrs->history;
+    else if(field == 's')
+        garbage = &ptrs->scanner;
+    else if(field == 'r')
+    garbage = &ptrs->helper_funcs;
+    else
+        garbage = NULL;
+
+    if(behavior == 2)
+        err = 1;
+    if(behavior == 1)
+    {
+        _free(garbage);
         return NULL;
     }
-    if ((size > 0 || non_allocted) && !error_free)
+    if ((size > 0 || non_allocted) && behavior == 0)
     {
         if(size > 0 || !non_allocted)
             instence = allocate_memory(size);
         else
             instence = non_allocted;
         if (!instence)
-            error_free = true;
+            err = 1;
         new_node = new(instence, i);
         if (!new_node)
-            error_free = true;
-        insertnode(&garbage, new_node);
+            err = 1;
+        insertnode(garbage, new_node);
         i++;
     }
-    if(error_free)
+    if(err == 1)
     {
         if(instence)
         {
             free(instence);
             instence = NULL;
         }
-        _free(&garbage);
-        garbage = NULL;
-        perror("allocation problem");
+        _free_all(&ptrs);
         exit(EXIT_FAILURE);       
     }
     return instence;   

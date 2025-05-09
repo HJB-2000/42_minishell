@@ -1,5 +1,6 @@
-#ifndef SCANNER_H
-#define SCANNER_H
+#ifndef SCANNER___H
+#define SCANNER___H
+
 #include "../minishell.h"
 
 // typedef enum {

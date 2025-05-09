@@ -1,11 +1,11 @@
 {
-    ignore_readline_leak
-    Memcheck:Leak
-    fun:readline
-}
-{
-    ignore_readline_still_reachable
-    Memcheck:Leak
-    fun:readline
-    fun:xmalloc
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:xmalloc
+   fun:readline_internal_teardown
+   fun:readline
+   fun:read_input
+   fun:main
 }

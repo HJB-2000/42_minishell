@@ -1,0 +1,324 @@
+/////////////////////////////////////////////////////////////////////////////
+
+// The syntax for a command is
+//
+//   <local>    = VARIABLE=VALUE
+//   <red_op>   = < / << / > / >> / 2> / 2>> / &>
+//   <redirect> = <red_op> FILENAME
+//   <prefix>   = <local> / <redirect> / <prefix> <local> / <prefix> <redirect>
+//   <suffix>   = SIMPLE / <redirect> / <suffix> SIMPLE / <suffix> <redirect>
+//   <redList>  = <redirect> / <redList> <redirect>
+//   <simple>   = SIMPLE / <prefix> SIMPLE / SIMPLE <suffix>
+//                       / <prefix> SIMPLE <suffix>
+//   <subcmd>   = (<command>) / <prefix> (<command>) / (<command>) <redList>
+//                            / <prefix> (<command>) <redList>
+//   <stage>    = <simple> / <subcmd>
+//   <pipeline> = <stage> / <pipeline> | <stage>
+//   <and-or>   = <pipeline> / <and-or> && <pipeline> / <and-or> || <pipeline>
+//   <sequence> = <and-or> / <sequence> ; <and-or> / <sequence> & <and-or>
+//   <command>  = <sequence> / <sequence> ; / <sequence> &
+//
+//   Note that FILENAME = SIMPLE.
+//
+// A command is represented as a tree of CMD structs containing its <simple> 
+// commands and the "operators" | (= PIPE), && (= SEP_AND), || (= SEP_OR),
+// ; (= SEP_END), & (= SEP_BG), and SUBCMD.  The command tree is determined
+// by (but is not equal to) the parse tree in the above grammar.
+//
+// The tree for a <simple> is a single struct of type SIMPLE that specifies its
+// arguments (argc, argv[]); its local variables (nLocal, locVar[], locVal[]);
+// and whether and where to redirect its standard input (fromType, fromFile),
+// its standard output (toType, toFile), and its standard error (errType,
+// errFile).  The left and right children are NULL.
+//
+// The tree for a <stage> is either the tree for a <simple> or a CMD struct of
+// type SUBCMD (which may have local variables and redirection) whose left
+// child is the tree representing a <command> and whose right child is NULL.
+// Note that I/O redirection is associated with a <stage> (i.e., a <simple> or
+// <subcmd>), but not with a <pipeline> (redirection for the first/last stage
+// is associated with the stage, not the pipeline).
+//
+// The tree for a <pipeline> is either the tree for a <stage> or a CMD struct
+// of type PIPE whose right child is a tree representing the last <stage> and
+// whose left child is the tree representing the rest of the <pipeline>.
+//
+// The tree for an <and-or> is either the tree for a <pipeline> or a CMD
+// struct of type && (= SEP_AND) or || (= SEP_OR) whose left child is a tree
+// representing an <and-or> and whose right child is a tree representing a
+// <pipe-line>.
+//
+// The tree for a <sequence> is either the tree for an <and-or> or a CMD
+// struct of type ; (= SEP_END) or & (= SEP_BG) whose left child is a tree
+// representing a <sequence> and whose right child is a tree representing an
+// <and-or>.
+//
+// The tree for a <command> is either the tree for a <sequence> or a CMD
+// struct of type ; (= SEP_END) or & (= SEP_BG) whose left child is the tree
+// representing a <sequence> and whose right child is NULL.
+
+// Examples (where A, B, C, D, and E are <simple>):                          //
+//                                                                           //
+//                              Expression Tree                              //
+//                                                                           //
+//   < A B | C | D | E > F                     PIPE                          //
+//                                            /    \                         //
+//                                        PIPE      E >F                     //
+//                                       /    \                              //
+//                                   PIPE      D                             //
+//                                  /    \                                   //
+//                              <A B      C                                  //
+//                                                                           //
+//   A && B || C && D                   &&                                   //
+//                                     /  \                                  //
+//                                   ||    D                                 //
+//                                  /  \                                     //
+//                                &&    C                                    //
+//                               /  \                                        //
+//                              A    B                                       //
+//                                                                           //
+//   A ; B & C ; D || E ;                 ;                                  //
+//                                      /                                    //
+//                                     ;                                     //
+//                                   /   \                                   //
+//                                  &     ||                                 //
+//                                 / \   /  \                                //
+//                                ;   C D    E                               //
+//                               / \                                         //
+//                              A   B                                        //
+//                                                                           //
+//   (A ; B &) | (C || D) && E                 &&                            //
+//                                            /  \                           //
+//                                        PIPE    E                          //
+//                                       /    \                              //
+//                                    SUB      SUB                           //
+//                                   /        /                              //
+//                                  &       ||                               //
+//                                 /       /  \                              //
+//                                ;       C    D                             //
+//                               / \                                         //
+//                              A   B                                        //
+
+
+..........................................................................................
+🛍️ Minishell AST Construction — Purpose-Driven Steps
+
+STEP 1: Clearly Define the Goal of the AST
+
+🔍 Why you're doing this:
+You need to transform a flat sequence of tokens (like echo hello | grep h ; ls) into a structured tree that reflects how a shell would execute the commands — considering precedence, grouping, logical control, and nesting.
+
+📌 AST helps with:
+
+Understanding execution order (;, |, &&, ||)
+
+Capturing command boundaries
+
+Making subshells and grouped execution possible
+
+Future support for redirections and complex shells
+
+STEP 2: Analyze and Classify Your Tokens
+
+🔍 Why this matters:
+Your parser can only make sense of tokens it understands structurally. That means knowing what type of thing each token is — and this affects how you parse and prioritize it.
+
+📌 Define token types such as:
+
+WORD (command/arg)
+
+PIPE |
+
+AND &&, OR ||
+
+SEQUENCE ;
+
+SUBSHELL_OPEN (, SUBSHELL_CLOSE )
+
+REDIRECTION <, >, >>, etc.
+
+🎯 Think: this is your grammar vocabulary.
+
+STEP 3: Define AST Node Types Based on Shell Grammar
+
+🔍 Why you're doing this:
+You must design your AST to mirror the shell’s logic rules — which means each kind of operation (like a pipe or sequence) becomes a distinct node type.
+
+📌 Node types might include:
+
+COMMAND
+
+PIPE
+
+SEQUENCE
+
+LOGICAL_AND / LOGICAL_OR
+
+SUBSHELL
+
+(Later) REDIRECTION
+
+🎯 These are your grammar rules in tree form.
+
+STEP 4: Define Parsing Precedence and Associativity Rules
+
+🔍 Why this step matters:
+The shell doesn’t treat all operators equally. For example:
+
+echo hello && ls | grep txt
+
+Here, | binds tighter than &&.
+
+📌 You must define:
+
+What binds tighter?
+
+What groups left-to-right or right-to-left?
+
+🎯 This allows you to parse correctly without executing yet.
+
+STEP 5: Implement Recursive Descent Parsing Functions
+
+🔍 Why you're doing this:
+Instead of trying to parse all at once, break it into recursive functions that handle each precedence level and return a subtree.
+
+📌 Typical stages:
+
+Parse sequences (;)
+
+Parse logical operations (&&, ||)
+
+Parse pipelines (|)
+
+Parse commands (words, grouped argv)
+
+Parse subshells ((...))
+
+Parse redirections (later)
+
+Each level calls the one below it — higher-level operators wrap lower ones in tree nodes.
+
+🎯 This modular parsing gives you clarity and control.
+
+STEP 6: Build Tree Nodes During Parsing
+
+🔍 Why you're doing this:
+When a parsing function detects a rule match (e.g., COMMAND | COMMAND), it creates a node and attaches left/right children.
+
+📌 Each node holds:
+
+Its type
+
+Pointers to child nodes (left/right or list)
+
+(For COMMANDs) argv array
+
+🎯 This creates the actual AST.
+
+STEP 7: Handle Subshells and Parentheses
+
+🔍 Why it's critical:
+Subshells change precedence and group expressions differently.
+
+📌 If the parser sees (, it must:
+
+Recursively parse the inner expression as one subtree
+
+Wrap it as a SUBSHELL node
+
+🎯 Enables (echo hi && ls) | wc to be parsed correctly.
+
+STEP 8: Error Handling and Recovery
+
+🔍 Why it matters:
+Bad syntax (like || |) must be caught. Your parser should detect:
+
+Unexpected tokens
+
+Mismatched parentheses
+
+Invalid operator sequences
+
+📌 Always verify and validate syntax at each step.
+
+🎯 This makes your shell robust and user-safe.
+
+STEP 9: Test with Structured Examples
+
+🔍 Why you're doing this:
+Once the AST is built, you must test it with many command types to ensure it reflects correct execution order and grouping.
+
+📌 Example test cases:
+
+ls -l
+
+ls -l | grep .c | wc -l
+
+(ls -l) | grep .c
+
+echo hi && ls ; pwd
+
+echo a || (false && echo b)
+
+🎯 This verifies correct structure, not yet execution.
+
+STEP 10: Extend to Redirections and Execution Later
+
+🔍 Why it’s not done yet:
+Redirections (>, <, >>) and actual execution can come after the AST is solid.
+
+📌 Once the tree is correct:
+
+Execution becomes a tree traversal
+
+Redirections modify the environment of nodes during evaluation
+
+🎯 Build a solid parser before execution logic.
+
+✅ Summary (Your Mission Flow)
+
+Understand your shell grammar — what rules exist?
+
+Classify tokens — turn flat text into meaningful units
+
+Design AST node types — based on grammar rules
+
+Define precedence — how things should group
+
+Build recursive parsers — one rule per function
+
+Construct nodes — attach subtrees as you go
+
+Handle grouping — with subshells/parentheses
+
+Validate input — detect and report errors
+
+Test structure — using sample command lines
+
+Extend later — with redirection and execution
+
+
+...........................................................................................
+
+
+
+
+AST Implementation
+1-
+	* define an Enum for the tokens we have based on there importance and there weight 
+in the command line 
+	* define an Enum for the type of token like 
+		-operators
+		-builtins ...
+	* define a structure that going to represent a token this struct contain 
+		- type of the token (from the Enum type)
+		- the precedence of the token (from the power level Enum)
+		- the number of arguments 
+		- the data of accepted arguments
+		- the return data type
+2- we need a data structure that contains tokens with there specific criteria
+ 	* so for example it maybe an array of structure token
+	* for example we show the null token :
+
+ /*    type    precedence    argc    idtype    odtype    */
+		{AST_TOK_NULL,    -1,  1,  AST_DTYPE_NULL,     AST_DTYPE_NULL}
+		{AST_TOKT_BOPT,    3,  2,  AST_DTYPE_INTEGER,  AST_DTYPE_INTEGER}	

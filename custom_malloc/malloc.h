@@ -20,8 +20,29 @@ typedef struct s_garbage
 	struct s_garbage	*next;
 }	t_garbage;
 
-#define ALLOCATE(allocateSize, pointer, freeFlag, errorFlag) \
-	_malloc(allocateSize, pointer, freeFlag, errorFlag)
+typedef struct s_field 
+{
+	t_garbage *input_cmd; // i
+	t_garbage *history; // h
+	t_garbage *scanner; // s
+	t_garbage *helper_funcs;// r
+}t_field;
 
-void *_malloc(size_t size, void *non_allocted ,bool trigger_free, bool error_free);
+
+#ifndef alloc
+#define alloc(size, c) _malloc(size, NULL, 0,c)
+#endif
+#ifndef remember
+#define remember(ptr, c) _malloc(0, ptr, 0, c)
+#endif
+#ifndef cleanup
+#define cleanup(c) _malloc(0, NULL, 1,c)
+#endif
+#ifndef destroy
+#define destroy _malloc(0, NULL, 2, '\0')
+#endif
+
+void *_malloc(size_t size, void *non_allocted ,int behavior, char field);
+
+
 #endif

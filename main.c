@@ -19,13 +19,13 @@ int main(int argc, char **argv, char **envp)
     (void)argv;
     (void)envp;
     char *line;
-    int i = 20;
+    int i = 10;
     while(i--)
     {
-        line = read_input();
-        compile((const char *)line);
+        line = read_input(NULL);
+        lexer(line);
+        cleanup('i');
     }
-    // _malloc(0, NULL, true, false);
-    ALLOCATE(0, NULL, true, false);
-    history(NULL, false, true);
+    cleanup('h');
+    cleanup('r');
 }

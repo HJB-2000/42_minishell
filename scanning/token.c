@@ -1,4 +1,4 @@
-#include "scanner.h"
+#include "__scanner.h"
 
 bool isDigit(char c) {
     return c >= '0' && c <= '9';
@@ -93,35 +93,35 @@ TokenType checkKeyword(Scanner* scanner, int start, int length,
 
 TokenType identifierType(Scanner* scanner){
 
-	// if (scanner->start[0]) {
-	// 	char c = scanner->start[0];
-	// 	if(c == 'p') return checkKeyword(scanner, 1, 2, "wd", TOKEN_PWD);
-	// 	else if(c == 'u') return checkKeyword(scanner, 1, 4, "nset", TOKEN_UNSET);
-	// 	else if(c == 'h') return checkKeyword(scanner, 1, 6, "istory", TOKEN_HISTORY);
-	// 	else if(c == 'c'){
-	// 		if(scanner->current - scanner->start > 1){
-	// 			c = scanner->start[1];
-	// 			if(c == 'd') return checkKeyword(scanner, 2, 0, "", TOKEN_CD);
-	// 			else if(c == 'l') return checkKeyword(scanner, 2, 3, "ear", TOKEN_CLEAR);
-	// 			return TOKEN_IDENTIFIER;
-	// 		}	
-	// 	}
-	// 	else if (c == 'e'){
-	// 		if(scanner->current - scanner->start > 1) {
-	// 			c = scanner->start[1];
-	// 			if (c == 'x'){
-	// 				if (scanner->current - scanner->start > 2){
-	// 					c = scanner->start[2];
-	// 					if(c == 'i') return checkKeyword(scanner, 3, 1, "t", TOKEN_EXIT);
-	// 					else if(c == 'p') return checkKeyword(scanner, 3, 3, "ort", TOKEN_EXPORT);
-	// 				}
-	// 			}
-	// 			else if(c == 'n') return checkKeyword(scanner, 2, 1, "v", TOKEN_ENV);
-	// 			else if(c == 'c') return checkKeyword(scanner, 2, 2, "ho", TOKEN_ECHO);
-	// 			return TOKEN_IDENTIFIER;
-	// 		}
-  // 		}
-	// }
+	if (scanner->start[0]) {
+		char c = scanner->start[0];
+		if(c == 'p') return checkKeyword(scanner, 1, 2, "wd", TOKEN_PWD);
+		else if(c == 'u') return checkKeyword(scanner, 1, 4, "nset", TOKEN_UNSET);
+		else if(c == 'h') return checkKeyword(scanner, 1, 6, "istory", TOKEN_HISTORY);
+		else if(c == 'c'){
+			if(scanner->current - scanner->start > 1){
+				c = scanner->start[1];
+				if(c == 'd') return checkKeyword(scanner, 2, 0, "", TOKEN_CD);
+				else if(c == 'l') return checkKeyword(scanner, 2, 3, "ear", TOKEN_CLEAR);
+				return TOKEN_IDENTIFIER;
+			}	
+		}
+		else if (c == 'e'){
+			if(scanner->current - scanner->start > 1) {
+				c = scanner->start[1];
+				if (c == 'x'){
+					if (scanner->current - scanner->start > 2){
+						c = scanner->start[2];
+						if(c == 'i') return checkKeyword(scanner, 3, 1, "t", TOKEN_EXIT);
+						else if(c == 'p') return checkKeyword(scanner, 3, 3, "ort", TOKEN_EXPORT);
+					}
+				}
+				else if(c == 'n') return checkKeyword(scanner, 2, 1, "v", TOKEN_ENV);
+				else if(c == 'c') return checkKeyword(scanner, 2, 2, "ho", TOKEN_ECHO);
+				return TOKEN_IDENTIFIER;
+			}
+  		}
+	}
   (void)scanner;
   	return TOKEN_IDENTIFIER;
 }

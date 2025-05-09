@@ -3,18 +3,28 @@ HEADER = minishell.h
 BRANCH_HEADERS = custom_malloc/malloc.h\
 					helper_functions/helper_functions.h\
 					read_input_and_history/read_input.h\
-					scanning/scanner.h
+					scanning/lexer.h
+					
 
-GFLAGS = -Werror -Wall -Wextra -g3 -fsanitize=address
+GFLAGS = -Wextra -Werror -Wall -fsanitize=address -g
 CC = gcc
 
 MAIN_FILE = main.c
 
 READ_INPUT_FILES = read_input_and_history/read_command.c\
 					read_input_and_history/history.c\
+					scanning/lexer.c\
+					scanning/lexer_helpers.c\
+					scanning/scanner_1.c\
 					scanning/scanner.c\
-					scanning/token.c\
-					scanning/recognize.c
+					scanning/travel_line.c\
+					scanning/identifier.c\
+					scanning/number.c\
+					scanning/quotes.c
+					# scanning/scannar1.c\
+					# scanning/token.c\
+					# scanning/recognize.c
+					# scanning/scanner.c\
 
 
 

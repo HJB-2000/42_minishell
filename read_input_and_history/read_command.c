@@ -8,16 +8,14 @@ static char *extract_absolute_path(char *str)
 	int start;
 
     count = 0;
-    len = ft_strlen(str) - 1;
+    len = ft_strlen(str);
     while(str[len--] != '/')
         count++;
     start = ft_strlen(str) - count;
-    // absolute_path = _malloc(sizeof(char) * count +1, NULL, false, false);
-    absolute_path = ALLOCATE(sizeof(char) * count +1, NULL, false, false);
+    absolute_path = alloc(count+1, 'i');
     if(!absolute_path)
     {
-        // _malloc(0, NULL, false, false);
-        ALLOCATE(0, NULL, true, false);
+        cleanup('i');
     	return (NULL);
     }
 	count = 0;
@@ -37,11 +35,9 @@ static char *prompt_generator(char *str1, char *str2, char *str3, char *str4)
     	return (NULL);
     len = ft_strlen(str1) + ft_strlen(str2) + ft_strlen(str3)
             + ft_strlen(str4) + 1;
-    // prompt = _malloc(sizeof(char) * len, NULL, false, false);
-    prompt = ALLOCATE(sizeof(char) * len, NULL, false, false);
+    prompt = alloc(sizeof(char) * len, 'i');
     if(!prompt)
-		return ALLOCATE(0, NULL, true, false);
-		// return _malloc(0, NULL, true, false);
+		return cleanup('i');
     count = 0;
     while(*str1 && count < len)
 		  prompt[count++] = *str1++;
@@ -55,28 +51,34 @@ static char *prompt_generator(char *str1, char *str2, char *str3, char *str4)
     return (prompt);
 }
 
-char *read_input(void)
+
+char *read_input(char *msg)
 {
     char *line;
     char *prompt;
 
-    prompt = prompt_generator(getenv("USER"), "==> ",
-                extract_absolute_path(getenv("PWD")), " $: ");
+    if(!msg){
+        prompt = prompt_generator(getenv("USER"), "==> ",
+                    extract_absolute_path(getenv("PWD")), " $: ");
+    }
+    else
+        prompt = msg;
+    
     line = readline(prompt);
     if(!line)
-        return(ALLOCATE(0, NULL, true, false));
-        // return(_malloc(0, NULL, true, false));
+        return(cleanup('i'));
     if(line && *line){
         if(!history(line, false, false)){
             printf("Error: history failed\n");
             exit(1);
         }
-        // _malloc(0, line, false, false);
-        ALLOCATE(0, line, false, false);
+        remember(line, 'i');
         if(!strcmp(line, "history"))
             history(NULL, true, false);
-        else if(!strcmp(line, "clear"))
+        else if(!strcmp(line, "clear")){
+            // cleanup('h');
             history(line, false, true);
+        }
     }
     return (line);
 }

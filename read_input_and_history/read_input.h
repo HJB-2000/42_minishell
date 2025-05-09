@@ -12,7 +12,7 @@ typedef struct s_HISTORY{
 }t_HISTORY;
 
 
-char *read_input(void);
+char *read_input(char* msg);
 
 bool history(const char *line, bool display, bool clear);
 // t_HISTORY *new_hist_entry(const char *line, int index_line);
